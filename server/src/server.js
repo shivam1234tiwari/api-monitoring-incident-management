@@ -4,21 +4,21 @@ import dotenv from "dotenv";
 import cors from "cors";
 import connectDB from "./config/db.js";
 import monitoredAPIRoutes from "./routes/monitoredAPIRoutes.js";
-
+import { startMonitoringScheduler } from "./services/monitoringScheduler.js";
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Middleware
 app.use(cors());
 app.use(express.json());
 
-// END POINT SETUP
-
+// API Routes
 app.use("/api/monitored-apis", monitoredAPIRoutes);
 
-
+// Root Endpoint
 app.get("/", (req, res) => {
   res.status(200).json({
     success: true,
@@ -26,6 +26,7 @@ app.get("/", (req, res) => {
   });
 });
 
+// Server Health Endpoint
 app.get("/api/health", (req, res) => {
   res.status(200).json({
     success: true,
@@ -34,12 +35,20 @@ app.get("/api/health", (req, res) => {
   });
 });
 
+// Start Server
 const startServer = async () => {
-  await connectDB();
+  try {
+    await connectDB();
 
-  app.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`);
-  });
+    startMonitoringScheduler();
+
+    app.listen(PORT, () => {
+      console.log(`Server running at http://localhost:${PORT}`);
+    });
+  } catch (error) {
+    console.error("Failed to start server:", error.message);
+    process.exit(1);
+  }
 };
 
 startServer();
