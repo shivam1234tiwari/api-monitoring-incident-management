@@ -4,7 +4,8 @@ import {
   getMonitoredAPIs,
   getMonitoredAPIById,
   updateMonitoredAPI,
-  deleteMonitoredAPI
+  deleteMonitoredAPI,
+  toggleMonitoredAPI
 } from "../controllers/monitoredAPIController.js";
 import { runHealthCheck , getMonitoringHistory} from "../controllers/healthCheckController.js";
 
@@ -20,6 +21,8 @@ router.get("/:id", getMonitoredAPIById);
 router.get("/:id/history", getMonitoringHistory);
 
 router.patch("/:id", updateMonitoredAPI);
+router.patch("/:id/toggle", toggleMonitoredAPI);
+
 router.delete("/:id",deleteMonitoredAPI);
 
 export default router;

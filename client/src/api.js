@@ -74,3 +74,20 @@ export const createMonitoredAPI = async (apiData) => {
 
   return data;
 };
+
+export const toggleMonitoredAPI = async (id) => {
+  const response = await fetch(
+    `${API_BASE_URL}/monitored-apis/${id}/toggle`,
+    {
+      method: "PATCH",
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to toggle API status");
+  }
+
+  return data;
+};

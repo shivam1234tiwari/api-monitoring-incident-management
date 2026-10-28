@@ -175,3 +175,34 @@ export const deleteMonitoredAPI = async (req, res) => {
     });
   }
 };
+
+export const toggleMonitoredAPI = async (req, res) => {
+  try {
+    const api = await MonitoredAPI.findById(req.params.id);
+
+    if (!api) {
+      return res.status(404).json({
+        success: false,
+        message: "Monitored API not found",
+      });
+    }
+
+    api.isActive = !api.isActive;
+
+    await api.save();
+
+    return res.status(200).json({
+      success: true,
+      message: `API monitoring ${
+        api.isActive ? "activated" : "deactivated"
+      } successfully`,
+      data: api,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to update API monitoring status",
+      error: error.message,
+    });
+  }
+};
